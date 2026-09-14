@@ -17,8 +17,7 @@ SPEC_FIELDS = {"name", "description", "license", "compatibility", "metadata",
                "allowed-tools"}
 NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
-DOCS = ["SKILL.md", "SKILL.en.md", "README.md", "README.zh-CN.md",
-        "CONTRIBUTING.md"]
+DOCS = ["SKILL.md", "README.md", "README.zh-CN.md", "CONTRIBUTING.md"]
 
 
 def read(path):
@@ -95,13 +94,32 @@ class FrontmatterTest(unittest.TestCase):
         self.assertGreater(latin, 100, "not enough English trigger text")
         self.assertGreater(han, 20, "not enough Chinese trigger text")
 
-    def test_english_edition_has_parity(self):
-        """The English edition must keep the same section structure as the original."""
-        def sections(doc):
-            return [l for l in read(os.path.join(REPO, doc)).splitlines()
-                    if l.startswith("## ")]
-        self.assertEqual(len(sections("SKILL.md")), len(sections("SKILL.en.md")),
-                         "SKILL.en.md has drifted from SKILL.md")
+    def test_skill_md_is_bilingual(self):
+        """SKILL.md is the only entry point an agent loads, so it carries both
+        languages inline rather than delegating to a second file."""
+        text = read(os.path.join(REPO, "SKILL.md"))
+        latin = sum(1 for c in text if c.isascii() and c.isalpha())
+        han = len(re.findall(r"[\u4e00-\u9fff]", text))
+        self.assertGreater(latin, 3000, "not enough English content in SKILL.md")
+        self.assertGreater(han, 500, "not enough Chinese content in SKILL.md")
+
+    def test_every_section_carries_both_languages(self):
+        """Guards against a section being updated in one language only."""
+        text = read(os.path.join(REPO, "SKILL.md"))
+        sections = re.split(r"\n## ", "\n" + text)[1:]
+        self.assertGreaterEqual(len(sections), 3)
+        missing = []
+        for block in sections:
+            title = block.splitlines()[0].strip()
+            if "**English**" not in block or "**中文**" not in block:
+                missing.append(title)
+        self.assertEqual(missing, [],
+                         "these sections are not bilingual: " + "; ".join(missing))
+
+    def test_no_second_english_entry_point(self):
+        """A stray SKILL.en.md would duplicate the English text and drift."""
+        leftovers = [f for f in os.listdir(REPO) if f.startswith("SKILL.") and f != "SKILL.md"]
+        self.assertEqual(leftovers, [], "unexpected extra SKILL.* files: " + ", ".join(leftovers))
 
     def test_license_declared_and_shipped(self):
         fm = frontmatter(read(os.path.join(REPO, "SKILL.md")))

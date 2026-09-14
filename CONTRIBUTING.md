@@ -17,7 +17,7 @@ Issues and pull requests in **English or Chinese** are both welcome.
 
 - Runtime dependencies. The scanner uses the standard library only, on purpose. If a feature needs a library, it needs a stronger argument than convenience.
 - A "just run the formatter / auto-fix everything" mode. The whole point of workflow C is that the agent stops and asks before changing code.
-- Rewriting the Chinese `SKILL.md` into English in place. It is the file agents load, and changing its language costs every existing user. Add or extend the `.en.md` editions instead.
+- Rewriting `SKILL.md` into a single language. It is bilingual on purpose: it is the one file an agent loads, so both languages travel together. Removing one of them is a breaking change for half the users. Add or extend the `.en.md` reference editions instead if you need a language-specific document.
 
 ## Setting up
 
@@ -35,16 +35,17 @@ Requires Python 3.9+. There is no virtualenv, no `requirements.txt`, and no buil
 
 1. **Run the tests.** `python -m unittest discover -s tests -v` must be green.
 2. **Scan this repository with its own scanner.** `python scripts/check_file_sizes.py . --lang en` must exit `0`. This repo holds itself to the rule it ships.
-3. **Keep the two language editions in sync.** If you change `SKILL.md`, change `SKILL.en.md`. Same for anything in `references/` or `prompts/`. CI does not catch semantic drift — only you can.
+3. **Keep `SKILL.md` bilingual.** Every `## ` section must contain both an `**English**` and a `**中文**` block — CI enforces this via `test_every_section_carries_both_languages`. It catches a missing half, not a stale half: if you change a rule in one language, change the other one in the same commit. `references/` and `prompts/` keep separate `.md` and `.en.md` files; update both.
 4. **If you add a frontmatter field, add it to `tests/test_skill_package.py` too.** The package only uses fields from the [Agent Skills specification](https://agentskills.io); a host-specific field breaks portability and will fail CI.
 5. **If you add a script flag, add a test for it.** Including the failure case — `--soft` greater than `--hard`, a missing path, an empty directory.
 
 ## Changing the SKILL.md rules
 
-The instructions in `SKILL.md` are the actual product. Two things worth knowing before you edit them:
+The instructions in `SKILL.md` are the actual product. Three things worth knowing before you edit them:
 
 - **They are constraints on an agent, not advice.** Keep the imperative voice and the explicit "never" list. Softening a rule ("try to avoid…") measurably weakens compliance.
 - **Every phase needs an exit condition.** If you add a phase or a step, say what must be true before the agent may move on. Rules without an exit condition get skipped.
+- **A new section needs both languages.** Add the `**English**` block and the `**中文**` block together, in that order, or CI will reject the pull request.
 
 ## Reporting a problem with an agent's behavior
 

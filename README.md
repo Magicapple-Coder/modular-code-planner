@@ -80,8 +80,7 @@ Newer agents that follow the open spec also read `~/.agents/skills/` as a shared
 ```
 <your-agent-skills-dir>/
 └── modular-code-planner/
-    ├── SKILL.md                 # loaded automatically by the agent
-    ├── SKILL.en.md              # English edition (not auto-loaded)
+    ├── SKILL.md                 # loaded automatically; bilingual EN + 中文
     ├── references/
     │   ├── module-split-patterns.md   / .en.md
     │   └── refactoring-workflow.md    / .en.md
@@ -188,8 +187,7 @@ Tune the values per project: front-end components can relax to 400 / 600; strong
 
 | Path | Purpose |
 |---|---|
-| `SKILL.md` | Three workflows, in Chinese — this is the file agents load automatically: plan new modules (A), split files that are growing (B), restructure existing monoliths (C) |
-| `SKILL.en.md` | The same SKILL.md in English (not auto-loaded; use it if your host is configured for English, or just to read it) |
+| `SKILL.md` | **Bilingual** — every section gives English first, then Chinese. This is the file agents load automatically, and it covers all three workflows: plan new modules (A), split files that are growing (B), restructure existing monoliths (C) |
 | `references/refactoring-workflow.md` · `.en.md` | The 5-phase safe-refactoring procedure, with exit conditions and a failure-handling table |
 | `references/module-split-patterns.md` · `.en.md` | Layering model, 6 extraction techniques, conventions for Python / JS-TS / Java / Go / C#, 6 anti-patterns, interface-compatibility strategies, and signals that you should *not* split |
 | `scripts/check_file_sizes.py` | Line-count scanner, standard library only |
@@ -208,7 +206,7 @@ Included in the refactoring workflow, because agent refactors usually fail there
 
 ## Notes and limitations
 
-- **`SKILL.md` is written in Chinese**, since that is the file agents load by default. An English edition is provided as `SKILL.en.md`, and both `references/` documents have `.en.md` counterparts, but English content is not auto-loaded — rename or point your host at it if you need that.
+- **`SKILL.md` is bilingual**, English first and Chinese second in every section. That keeps one source of truth: a host that loads it in either language gets the full instructions, and there is no second file to drift. `references/` keeps separate `.md` and `.en.md` documents because those are read on demand, one language at a time. If you want an English-only skill, delete the `**中文**` blocks locally — the tests that enforce the bilingual structure live in `tests/test_skill_package.py`.
 - **Verification is not equivalence.** Splitting can preserve behavior and still break something your tests do not cover. The workflow requires the agent to state which parts are untested.
 - **This skill constrains an agent, it does not control one.** A host may ignore `SKILL.md`, and `allowed-tools` support varies widely across agents — that is why this package does not declare it.
 

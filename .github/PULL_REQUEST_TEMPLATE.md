@@ -15,7 +15,8 @@
 
 - [ ] `python -m unittest discover -s tests -v` passes
 - [ ] `python scripts/check_file_sizes.py . --lang en` exits `0`
-- [ ] Both language editions updated together (`SKILL.md` ↔ `SKILL.en.md`, and the same for `references/` and `prompts/`)
+- [ ] `SKILL.md` updated in **both** languages (every `## ` section needs an `**English**` and a `**中文**` block)
+- [ ] `references/` and `prompts/` updated in both the `.md` and `.en.md` files
 - [ ] If a frontmatter field was added, `tests/test_skill_package.py` was updated too
 - [ ] If a scanner flag was added, there is a test for it — **including its failure case**
 - [ ] No new runtime dependency

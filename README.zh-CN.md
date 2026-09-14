@@ -80,8 +80,7 @@ Copy-Item -Recurse modular-code-planner "$HOME\.claude\skills\"
 ```
 <你的 skills 目录>/
 └── modular-code-planner/
-    ├── SKILL.md                 # agent 自动加载的就是这个
-    ├── SKILL.en.md              # 英文版（不自动加载）
+    ├── SKILL.md                 # agent 自动加载；双语（英文 + 中文）
     ├── references/
     │   ├── module-split-patterns.md   / .en.md
     │   └── refactoring-workflow.md    / .en.md
@@ -188,8 +187,7 @@ python3 scripts/check_file_sizes.py <路径> [选项]
 
 | 路径 | 作用 |
 |---|---|
-| `SKILL.md` | 三条工作流（中文），agent 自动加载的就是这个文件：规划新模块（A）、拆分正在膨胀的文件（B）、重构存量巨型文件（C） |
-| `SKILL.en.md` | 同上的英文版（不会自动加载；宿主配置为英文、或你想读英文版时使用） |
+| `SKILL.md` | **双语** —— 每节先英文、后中文。agent 自动加载的就是这个文件，包含全部三条工作流：规划新模块（A）、拆分正在膨胀的文件（B）、重构存量巨型文件（C） |
 | `references/refactoring-workflow.md` · `.en.md` | 五阶段安全重构流程，含每阶段出口条件与失败处理表 |
 | `references/module-split-patterns.md` · `.en.md` | 分层模型、6 种提取手法、Python / JS-TS / Java / Go / C# 惯例、6 类反模式、接口兼容策略，以及「不该拆」的信号 |
 | `scripts/check_file_sizes.py` | 行数扫描脚本，仅用标准库 |
@@ -208,7 +206,7 @@ python3 scripts/check_file_sizes.py <路径> [选项]
 
 ## 注意事项与局限
 
-- **`SKILL.md` 正文是中文的**，因为 agent 默认加载的就是它。英文版放在 `SKILL.en.md`，两份 `references/` 也都有 `.en.md` 对应文件，但英文内容不会自动加载——需要的话把宿主指向英文版即可。
+- **`SKILL.md` 是双语的**，每节先英文后中文。这样只有一份真相源：任何语言的宿主加载它都能拿到完整指令，也不存在第二个文件会漂移。`references/` 仍保留 `.md` 与 `.en.md` 两份，因为它们是按需读取、一次只读一种语言。如果你想要纯英文版，本地删掉 `**中文**` 段落即可——约束双语结构的测试在 `tests/test_skill_package.py`。
 - **验证通过不等于行为等价。** 拆分可能保住了行为，却弄坏了测试没覆盖的地方。流程要求 agent 明确说明哪些部分没有测试覆盖。
 - **这个技能是约束 agent，不是控制 agent。** 宿主可以忽略 `SKILL.md`；`allowed-tools` 在各 agent 的支持程度差异很大——所以本包刻意不声明这个字段。
 
