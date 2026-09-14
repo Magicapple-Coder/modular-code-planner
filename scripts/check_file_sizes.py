@@ -112,6 +112,22 @@ def resolve_lang(requested):
     return "zh" if "zh" in code.lower() or "chinese" in code.lower() else "en"
 
 
+def configure_output():
+    """Never crash on a console that cannot represent a character.
+
+    On Windows, a piped stdout uses the ANSI code page, not UTF-8. Reporting a
+    non-ASCII path, or `--lang zh` on an en-US machine, would otherwise raise
+    UnicodeEncodeError and lose the whole report. Replace instead, and keep the
+    console's own encoding so a Chinese console still renders Chinese correctly.
+    Set PYTHONIOENCODING=utf-8 for UTF-8 output.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="replace")
+        except (AttributeError, ValueError, OSError):
+            pass
+
+
 def count_lines(path):
     """Return the line count, or None when the file cannot be read."""
     try:
@@ -151,6 +167,7 @@ def main():
     args = ap.parse_args()
 
     m = MESSAGES[resolve_lang(args.lang)]
+    configure_output()
     root = os.path.abspath(args.path)
 
     # Validate hard: a bad path must never look like "everything is fine".

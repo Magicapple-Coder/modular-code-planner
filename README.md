@@ -155,6 +155,8 @@ python3 scripts/check_file_sizes.py <path> [options]
 
 Default extension set covers 35 common code extensions. Dependencies, build output, generated files, type declarations and lock files are skipped automatically.
 
+Output uses the console's own encoding and degrades to `?` rather than crashing on a console that cannot render a character. Set `PYTHONIOENCODING=utf-8` for UTF-8 output — useful when piping into another tool or a log.
+
 **Exit codes**
 
 | Code | Meaning |

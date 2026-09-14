@@ -20,9 +20,15 @@ def write(path, lines):
         f.write("\n".join("x" for _ in range(lines)) + "\n")
 
 
-def run(*args):
+def run(*args, env=None):
+    """Run the scanner. PYTHONIOENCODING pins the child's stdout encoding so the
+    assertions below test the script's logic rather than the host code page."""
+    child_env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    if env:
+        child_env.update(env)
     r = subprocess.run([sys.executable, SCANNER] + list(args),
-                       capture_output=True, text=True, encoding="utf-8")
+                       capture_output=True, text=True, encoding="utf-8",
+                       env=child_env)
     return r.returncode, (r.stdout or "") + (r.stderr or "")
 
 
@@ -122,6 +128,21 @@ class ScannerTest(unittest.TestCase):
         _, out = run(self.proj, "--soft", "200", "--hard", "400", "--lang", "en")
         self.assertIn(">200", out)
         self.assertIn(">400", out)
+
+    def test_survives_a_console_that_cannot_render_the_output(self):
+        """Regression: an ASCII/cp1252 console must degrade, not crash.
+
+        Windows CI used to lose the entire report with UnicodeEncodeError when
+        printing Chinese on a non-UTF-8 code page.
+        """
+        r = subprocess.run(
+            [sys.executable, SCANNER, self.proj, "--lang", "zh"],
+            capture_output=True,
+            env=dict(os.environ, PYTHONIOENCODING="ascii"),
+        )
+        self.assertIn(r.returncode, (0, 1), "scanner crashed on an ASCII console")
+        self.assertIn(b"== ", r.stdout)
+        self.assertNotIn(b"Traceback", r.stderr)
 
 
 if __name__ == "__main__":
