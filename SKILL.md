@@ -11,8 +11,9 @@ metadata:
 
 # Modular Code Planner
 
-> **Language**: instructions are in Chinese. English overview: [README.md](README.md) · 中文说明: [README.zh-CN.md](README.zh-CN.md)
-> **Portability**: this package follows the open Agent Skills spec (SKILL.md). It assumes no particular agent, install path, or host tool names.
+> **语言 / Language**：本文件为中文版。English edition: [SKILL.en.md](SKILL.en.md)（英文版参考文档见 [`references/*.en.md`](references/)）
+> **Portability**：本包遵循开放的 Agent Skills 规范（SKILL.md），不假设任何特定 agent、安装路径或宿主工具名。
+> 说明文档：[README.md](README.md)（英） · [README.zh-CN.md](README.zh-CN.md)（中）
 
 目标：杜绝「一个文件堆上千行」。写新代码前先规划模块；文件接近阈值时主动拆；重构已有大文件时行为不变、分步可验证。
 

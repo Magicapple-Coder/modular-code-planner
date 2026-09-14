@@ -63,10 +63,11 @@ Newer agents that follow the open spec also read `~/.agents/skills/` as a shared
 ```
 <your-agent-skills-dir>/
 └── modular-code-planner/
-    ├── SKILL.md
+    ├── SKILL.md                 # loaded automatically by the agent
+    ├── SKILL.en.md              # English edition (not auto-loaded)
     ├── references/
-    │   ├── module-split-patterns.md
-    │   └── refactoring-workflow.md
+    │   ├── module-split-patterns.md   / .en.md
+    │   └── refactoring-workflow.md    / .en.md
     └── scripts/
         └── check_file_sizes.py
 ```
@@ -165,13 +166,14 @@ Tune the values per project: front-end components can relax to 400 / 600; strong
 
 | Path | Purpose |
 |---|---|
-| `SKILL.md` | Three workflows: plan new modules (A), split files that are growing (B), restructure existing monoliths (C) |
-| `references/refactoring-workflow.md` | The 5-phase safe-refactoring procedure, with exit conditions and a failure-handling table |
-| `references/module-split-patterns.md` | Layering model, 6 extraction techniques, conventions for Python / JS-TS / Java / Go / C#, 6 anti-patterns, interface-compatibility strategies, and signals that you should *not* split |
+| `SKILL.md` | Three workflows, in Chinese — this is the file agents load automatically: plan new modules (A), split files that are growing (B), restructure existing monoliths (C) |
+| `SKILL.en.md` | The same SKILL.md in English (not auto-loaded; use it if your host is configured for English, or just to read it) |
+| `references/refactoring-workflow.md` · `.en.md` | The 5-phase safe-refactoring procedure, with exit conditions and a failure-handling table |
+| `references/module-split-patterns.md` · `.en.md` | Layering model, 6 extraction techniques, conventions for Python / JS-TS / Java / Go / C#, 6 anti-patterns, interface-compatibility strategies, and signals that you should *not* split |
 | `scripts/check_file_sizes.py` | Line-count scanner, standard library only |
-| `prompts/giant-file-split-prompt.zh-CN.md` | Standalone prompt covering the same ground — for any chat model that does not support skills |
+| `prompts/giant-file-split-prompt.zh-CN.md` · `.en.md` | Standalone prompt covering the same ground — for any chat model that does not support skills |
 
-Included in `references/refactoring-workflow.md`, because agent refactors usually fail there:
+Included in the refactoring workflow, because agent refactors usually fail there:
 
 - **Phase 0 freezes behavior first** — no safety net, no split.
 - **Hidden-coupling inventory** covers dynamic references that a symbol search cannot find: `getattr`, `importlib`, DI containers, component scanning, route strings, config class paths, decorator registries, `embed` directives.
@@ -182,7 +184,7 @@ Included in `references/refactoring-workflow.md`, because agent refactors usuall
 
 ## Notes and limitations
 
-- **`SKILL.md` instructions are written in Chinese.** The front-matter `description` is bilingual, so triggering works in both languages, but the detailed workflow text is Chinese. An English `SKILL.md` is not currently provided.
+- **`SKILL.md` is written in Chinese**, since that is the file agents load by default. An English edition is provided as `SKILL.en.md`, and both `references/` documents have `.en.md` counterparts, but English content is not auto-loaded — rename or point your host at it if you need that.
 - **Verification is not equivalence.** Splitting can preserve behavior and still break something your tests do not cover. The workflow requires the agent to state which parts are untested.
 - **This skill constrains an agent, it does not control one.** A host may ignore `SKILL.md`, and `allowed-tools` support varies widely across agents — that is why this package does not declare it.
 

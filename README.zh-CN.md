@@ -63,10 +63,11 @@ Copy-Item -Recurse modular-code-planner "$HOME\.claude\skills\"
 ```
 <你的 skills 目录>/
 └── modular-code-planner/
-    ├── SKILL.md
+    ├── SKILL.md                 # agent 自动加载的就是这个
+    ├── SKILL.en.md              # 英文版（不自动加载）
     ├── references/
-    │   ├── module-split-patterns.md
-    │   └── refactoring-workflow.md
+    │   ├── module-split-patterns.md   / .en.md
+    │   └── refactoring-workflow.md    / .en.md
     └── scripts/
         └── check_file_sizes.py
 ```
@@ -165,13 +166,14 @@ python3 scripts/check_file_sizes.py <路径> [选项]
 
 | 路径 | 作用 |
 |---|---|
-| `SKILL.md` | 三条工作流：规划新模块（A）、拆分正在膨胀的文件（B）、重构存量巨型文件（C） |
-| `references/refactoring-workflow.md` | 五阶段安全重构流程，含每阶段出口条件与失败处理表 |
-| `references/module-split-patterns.md` | 分层模型、6 种提取手法、Python / JS-TS / Java / Go / C# 惯例、6 类反模式、接口兼容策略，以及「不该拆」的信号 |
+| `SKILL.md` | 三条工作流（中文），agent 自动加载的就是这个文件：规划新模块（A）、拆分正在膨胀的文件（B）、重构存量巨型文件（C） |
+| `SKILL.en.md` | 同上的英文版（不会自动加载；宿主配置为英文、或你想读英文版时使用） |
+| `references/refactoring-workflow.md` · `.en.md` | 五阶段安全重构流程，含每阶段出口条件与失败处理表 |
+| `references/module-split-patterns.md` · `.en.md` | 分层模型、6 种提取手法、Python / JS-TS / Java / Go / C# 惯例、6 类反模式、接口兼容策略，以及「不该拆」的信号 |
 | `scripts/check_file_sizes.py` | 行数扫描脚本，仅用标准库 |
-| `prompts/giant-file-split-prompt.zh-CN.md` | 独立提示词版本，覆盖同样内容，适用于不支持 skill 的普通对话模型 |
+| `prompts/giant-file-split-prompt.zh-CN.md` · `.en.md` | 独立提示词版本，覆盖同样内容，适用于不支持 skill 的普通对话模型 |
 
-`references/refactoring-workflow.md` 里重点处理了 AI 重构最容易翻车的地方：
+重构流程里重点处理了 AI 最容易翻车的地方：
 
 - **阶段 0 先冻结行为** —— 没有安全网就不拆。
 - **隐藏耦合清单**覆盖了符号搜索找不到的动态引用：`getattr`、`importlib`、依赖注入容器、组件扫描、路由字符串、配置里的类路径、装饰器注册表、`embed` 指令。
@@ -182,7 +184,7 @@ python3 scripts/check_file_sizes.py <路径> [选项]
 
 ## 注意事项与局限
 
-- **`SKILL.md` 正文是中文的。** frontmatter 里的 `description` 是中英双语，所以中英文都能触发，但详细流程文字是中文。目前未提供英文版 `SKILL.md`。
+- **`SKILL.md` 正文是中文的**，因为 agent 默认加载的就是它。英文版放在 `SKILL.en.md`，两份 `references/` 也都有 `.en.md` 对应文件，但英文内容不会自动加载——需要的话把宿主指向英文版即可。
 - **验证通过不等于行为等价。** 拆分可能保住了行为，却弄坏了测试没覆盖的地方。流程要求 agent 明确说明哪些部分没有测试覆盖。
 - **这个技能是约束 agent，不是控制 agent。** 宿主可以忽略 `SKILL.md`；`allowed-tools` 在各 agent 的支持程度差异很大——所以本包刻意不声明这个字段。
 
