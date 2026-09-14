@@ -1,0 +1,59 @@
+name: Feature request
+description: Suggest a rule, a stack convention, a scanner flag, or a workflow change
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This package has a deliberate bias: fewer moving parts, no runtime dependencies, and rules that an agent can actually be held to.
+        Proposals that add capability without adding a dependency are the easiest to accept.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: What would you like to change?
+      options:
+        - A rule or threshold in SKILL.md
+        - A convention for a language or stack
+        - A scanner flag or detection rule
+        - The refactoring workflow
+        - Documentation or translation
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the situation where the current behaviour fails you. Concrete beats hypothetical.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you propose
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you considered instead
+      description: Including "doing nothing" — sometimes the right answer is that this is out of scope.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints
+      description: The project will not accept these. Tick to confirm your proposal respects them.
+      options:
+        - label: It needs no third-party runtime dependency
+          required: true
+        - label: It does not add a host-specific field to the frontmatter
+          required: true
+        - label: It does not make the agent act without user approval
+          required: true

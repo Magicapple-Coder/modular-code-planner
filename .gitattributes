@@ -1,0 +1,10 @@
+# Normalise line endings in the repository; check out native on Windows.
+* text=auto eol=lf
+
+*.png binary
+*.gif binary
+
+# GitHub renders these; keep them LF so diffs stay clean.
+*.md text eol=lf
+*.py text eol=lf
+*.yml text eol=lf

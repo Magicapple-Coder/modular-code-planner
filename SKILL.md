@@ -2,7 +2,7 @@
 name: modular-code-planner
 description: "Plan code modules before writing code and keep single files small. Use when starting a new project or feature module, designing directory structure or architecture layering, generating multiple code files at once, or when one file has grown too long (hundreds to thousands of lines), mixes too many responsibilities, or needs a safe split or refactor. Covers Python, JavaScript/TypeScript, Java, Go, C#, Rust and more: prevent oversized files, enforce line-count thresholds, and restructure crowded files without changing behavior. 代码模块化规划与单文件体积治理：从零创建项目或功能模块、设计目录结构、规划架构分层、生成多个代码文件，或发现单个代码文件过长（数百上千行）、职责过多、需要安全拆分重构时使用。"
 license: MIT
-compatibility: "Bundled scripts/check_file_sizes.py requires Python 3.8+ (standard library only). No third-party dependencies, no network access."
+compatibility: "Bundled scripts/check_file_sizes.py requires Python 3.9+ (standard library only). No third-party dependencies, no network access."
 metadata:
   version: "1.1.0"
   author: "Magicapple-Coder"

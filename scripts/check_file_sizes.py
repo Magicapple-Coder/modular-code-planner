@@ -193,7 +193,12 @@ def main():
         if n is None:
             skipped.append(fp)
             continue
-        rel = os.path.relpath(fp, root) if os.path.isdir(root) else fp
+        # Report POSIX-style separators on every platform: portable in reports,
+        # and still valid input on Windows.
+        if os.path.isdir(root):
+            rel = os.path.relpath(fp, root).replace(os.sep, "/")
+        else:
+            rel = fp.replace(os.sep, "/")
         stats.append({"lines": n, "path": rel})
 
     if not stats:

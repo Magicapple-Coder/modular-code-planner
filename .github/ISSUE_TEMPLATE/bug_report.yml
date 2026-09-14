@@ -1,0 +1,88 @@
+name: Bug report
+description: The skill, the scanner, or an agent's behaviour is not doing what it should
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. The most useful thing you can include is **what the agent actually did**, not just what was wrong with the output.
+        Reports in English or Chinese are both fine. 中英文都可以。
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: What is affected?
+      options:
+        - An agent ignored or misread SKILL.md
+        - The scanner gave a wrong result
+        - The scanner crashed
+        - Documentation is wrong or unclear
+        - Something else
+    validations:
+      required: true
+
+  - type: input
+    id: agent
+    attributes:
+      label: Agent and version
+      description: Which agent, and which version. This matters a lot — skill discovery differs between hosts.
+      placeholder: "e.g. Claude Code 1.2.3, Codex CLI 0.9, Cursor 0.51"
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: modular-code-planner version
+      description: From the release tag, or from the `metadata.version` field in SKILL.md.
+      placeholder: "e.g. v1.1.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened
+      description: Paste the real output, a transcript, or a screenshot.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: |
+        For scanner problems, the command you ran and the shape of the project are usually enough.
+        For agent-behaviour problems, the prompt you gave it and roughly what the repo looked like.
+      placeholder: |
+        1. Ran `python scripts/check_file_sizes.py ./src`
+        2. Expected ...
+        3. Got ...
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Python version (scanner issues only)
+      placeholder: "e.g. 3.12.2 on Windows 11"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I am running the latest release
+          required: false
+        - label: I searched existing issues for the same problem
+          required: true

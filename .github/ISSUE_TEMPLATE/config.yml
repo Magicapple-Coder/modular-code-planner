@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: How skills are discovered by each agent
+    url: https://agentskills.io
+    about: The open Agent Skills specification, if your question is about where a skill should live.
+  - name: Questions and general discussion
+    url: https://github.com/Magicapple-Coder/modular-code-planner/discussions
+    about: For anything that is not clearly a bug or a feature request.
