@@ -17,7 +17,8 @@ SPEC_FIELDS = {"name", "description", "license", "compatibility", "metadata",
                "allowed-tools"}
 NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
-DOCS = ["SKILL.md", "README.md", "README.zh-CN.md", "CONTRIBUTING.md"]
+DOCS = ["SKILL.md", "AGENTS.md", "llms.txt", "README.md", "README.zh-CN.md",
+        "CONTRIBUTING.md"]
 
 
 def read(path):
@@ -156,6 +157,32 @@ class LinkIntegrityTest(unittest.TestCase):
         zh = read(os.path.join(REPO, "README.zh-CN.md"))
         self.assertIn("README.zh-CN.md", en)
         self.assertIn("README.md", zh)
+
+
+class DiscoverabilityTest(unittest.TestCase):
+    """Files that help answer engines and agents find and describe this package."""
+
+    def test_agents_md_present_and_points_at_the_skill(self):
+        path = os.path.join(REPO, "AGENTS.md")
+        self.assertTrue(os.path.exists(path), "AGENTS.md is missing")
+        text = read(path)
+        self.assertIn("SKILL.md", text)
+        self.assertIn("python -m unittest", text)
+
+    def test_llms_txt_follows_the_llmstxt_org_shape(self):
+        path = os.path.join(REPO, "llms.txt")
+        self.assertTrue(os.path.exists(path), "llms.txt is missing")
+        lines = read(path).splitlines()
+        self.assertTrue(lines[0].startswith("# "), "llms.txt must open with an H1")
+        self.assertTrue(any(l.startswith("> ") for l in lines[:10]),
+                        "llms.txt should carry a one-line '> summary' near the top")
+        self.assertIn("## ", "\n".join(lines), "llms.txt should have linked sections")
+
+    def test_readme_answers_natural_language_questions(self):
+        """README covers the phrasings a user would actually type into an AI."""
+        text = read(os.path.join(REPO, "README.md")).lower()
+        for phrase in ["how do i", "does it work with", "do i need to install"]:
+            self.assertIn(phrase, text, f"README FAQ is missing the '{phrase}' phrasing")
 
 
 class PackageTest(unittest.TestCase):

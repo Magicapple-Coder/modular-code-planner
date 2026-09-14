@@ -1,0 +1,24 @@
+# modular-code-planner
+
+> An Agent Skills package that stops a codebase from turning into one giant file. It plans modules before code is written, holds every file to a 300/500-line budget, and splits existing monoliths without changing behavior.
+
+Works with any agent that reads `SKILL.md` — Claude Code, Codex CLI, Gemini CLI, GitHub Copilot, Cursor, OpenCode, Windsurf. Requires Python 3.9+ for the bundled scanner; standard library only, no network access.
+
+## Start here
+
+- [README.md](README.md) — what it does, how to install it, full scanner reference
+- [README.zh-CN.md](README.zh-CN.md) — 中文说明
+- [SKILL.md](SKILL.md) — the skill itself, bilingual (English first, then 中文)
+
+## Core documents
+
+- [SKILL.md](SKILL.md) — three workflows: plan new modules (A), split a file that is growing (B), restructure an existing monolith (C). Also the hard rules: 300/500 line thresholds, behavior invariance, no faked verifications.
+- [references/refactoring-workflow.en.md](references/refactoring-workflow.en.md) — the 5-phase procedure: freeze behavior, read-only inventory, plan, incremental migration, acceptance. Each phase has an exit condition. The agent may not touch a file until you approve the plan.
+- [references/module-split-patterns.en.md](references/module-split-patterns.en.md) — layering model, 6 extraction techniques, per-language conventions for Python / JS-TS / Java / Go / C#, anti-patterns, and the signals that you should *not* split.
+- [scripts/check_file_sizes.py](scripts/check_file_sizes.py) — the line-count scanner. Exit code `2` when the path is missing, so a typo is never reported as a clean bill of health.
+- [AGENTS.md](AGENTS.md) — instructions for agents working *in this repository*
+- [CONTRIBUTING.md](CONTRIBUTING.md) — what fits, what does not, and the agent-behavior bug report template
+
+## License
+
+MIT. See [LICENSE](LICENSE).

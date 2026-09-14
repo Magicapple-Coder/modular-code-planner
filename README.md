@@ -194,6 +194,8 @@ Tune the values per project: front-end components can relax to 400 / 600; strong
 | `tests/` | Self-tests for the scanner and for the package metadata. `python -m unittest discover -s tests -v` |
 | `prompts/giant-file-split-prompt.zh-CN.md` · `.en.md` | Standalone prompt covering the same ground — for any chat model that does not support skills |
 | `docs/demo.gif` | The terminal recording above |
+| `AGENTS.md` | Instructions for agents working *in this repository* |
+| `llms.txt` | Machine-readable map of the package for answer engines |
 
 Included in the refactoring workflow, because agent refactors usually fail there:
 
@@ -209,6 +211,37 @@ Included in the refactoring workflow, because agent refactors usually fail there
 - **`SKILL.md` is bilingual**, English first and Chinese second in every section. That keeps one source of truth: a host that loads it in either language gets the full instructions, and there is no second file to drift. `references/` keeps separate `.md` and `.en.md` documents because those are read on demand, one language at a time. If you want an English-only skill, delete the `**中文**` blocks locally — the tests that enforce the bilingual structure live in `tests/test_skill_package.py`.
 - **Verification is not equivalence.** Splitting can preserve behavior and still break something your tests do not cover. The workflow requires the agent to state which parts are untested.
 - **This skill constrains an agent, it does not control one.** A host may ignore `SKILL.md`, and `allowed-tools` support varies widely across agents — that is why this package does not declare it.
+
+---
+
+## Common questions
+
+**How do I stop an AI agent from writing one giant file?**
+Install this skill, then say so when you start a task. For anything touching 3+ files or ~200+ lines, it makes the agent produce a module plan and wait for your approval before writing code. It also sets a hard budget: 300 lines soft, 500 lines hard.
+
+**How do I split a 2,000-line file without breaking it?**
+Ask the agent to split it. Workflow C runs a 5-phase procedure: freeze behaviour with a baseline test run, inventory the file read-only, produce a plan, migrate one responsibility at a time with verification after each step, then report. The agent cannot create, modify or delete a file until you approve the plan.
+
+**I have no tests. Can I still split safely?**
+Yes, with a caveat the skill makes explicit: phase 0 requires characterization tests for the critical paths first — tests that pin down what the code does *now*, never what it "should" do. If that is not possible, it tells you so instead of splitting anyway.
+
+**How do I find which files in my project are too long?**
+```bash
+python3 scripts/check_file_sizes.py ./src
+```
+It prints everything over the threshold, flags long entry files separately, and skips dependencies, build output, generated files and lock files. Exit code `1` means something is over the hard limit; `2` means the path was wrong — never read `2` as a pass.
+
+**Does it work with Claude Code / Codex CLI / Cursor / Copilot?**
+Yes. The package follows the open [Agent Skills](https://agentskills.io) specification, so any agent that reads `SKILL.md` can use it. See [Install](#install) for the directory each tool reads from.
+
+**Do I need to install dependencies?**
+No. The scanner uses the Python standard library only. There is no `pip install`, no virtualenv, no network access.
+
+**Is the skill itself in English or Chinese?**
+Both. `SKILL.md` gives English first and Chinese second in every section, so the agent gets the full instructions regardless of language, and there is no second file to drift out of sync.
+
+**Will this delete or rewrite my code?**
+No. Splitting only moves code and fixes imports. The skill explicitly forbids changing business logic, fixing bugs, or "optimizing" during a split — findings go into a problem list for you to decide on.
 
 ---
 
